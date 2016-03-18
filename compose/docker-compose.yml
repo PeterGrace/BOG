@@ -1,0 +1,27 @@
+tsdb:
+  restart: always
+  image: petergrace/opentsdb-docker:latest
+  volumes:
+    - /volumes/monitoring/tsdb:/data
+
+bosun:
+  restart: always
+  image: petergrace/bosun-docker:latest
+  volumes:
+    - /volumes/monitoring/bosun:/opt/bosun/data
+  ports:
+    - "8070:8070"
+  links:
+    - tsdb
+
+grafana:
+  restart: always
+  image: petergrace/grafana-docker:latest
+  volumes:
+    - /volumes/monitoring/grafana:/var/lib/grafana
+  ports:
+    - "3000:3000"
+  links:
+    - bosun
+    - tsdb
+
